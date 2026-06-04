@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>bloxy tools</title>
     
-    <!-- Tab Image (Favicon) -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
     <link class="brand-favicon" rel="icon" type="image/png" href="https://iili.io/fUq31cv.png">
     
     <style>
@@ -383,7 +387,6 @@
 </head>
 <body>
 
-    <!-- Top Branding & Navigation Bar -->
     <div class="top-bar">
         <div class="brand">
             <img src="https://iili.io/fUq31cv.png" alt="bloxy tools logo" class="brand-logo">
@@ -396,14 +399,12 @@
         </div>
     </div>
 
-    <!-- SECTION 1: Pika's Packs Downloads -->
     <div id="packs" class="content-section active">
         <div class="glass-panel">
             <h1>Downloads</h1>
             <p>Get the latest custom UI and texture packs.</p>
             
             <div class="button-group">
-                <!-- Google Drive Direct Link for UI Pack -->
                 <a href="https://drive.google.com/uc?export=download&id=16bXli3lv1ij2Z4qoD2xuZz3EzfUfMB5U" class="download-btn" download>
                     <svg class="icon" viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -413,7 +414,6 @@
                     My UI Pack
                 </a>
 
-                <!-- Password Protected Linden Pack Link -->
                 <a href="#" class="download-btn" onclick="checkLindenPackPin(event)">
                     <svg class="icon" viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -426,14 +426,12 @@
         </div>
     </div>
 
-    <!-- SECTION 2: Bloxd Skybox Generator Container -->
     <div id="skybox-maker" class="content-section">
         <div class="iframe-container">
             <iframe src="https://bloxd-skybox-gen.edgeone.app/" title="Bloxd Skybox Generator"></iframe>
         </div>
     </div>
 
-    <!-- SECTION 3: Custom Pixel Art Maker -->
     <div id="pixel-art" class="content-section">
         <div class="glass-panel" style="max-width: 560px;">
             <h1>pixel art maker</h1>
@@ -481,7 +479,6 @@
         </div>
     </div>
 
-    <!-- Interface and Tool JavaScript Logic -->
     <script>
         // Section Switching Engine
         function showSection(sectionId, btnElement) {
@@ -498,14 +495,12 @@
 
         // Linden Pack PIN Protection Validator
         function checkLindenPackPin(event) {
-            event.preventDefault(); // Stop page scrolling/jumping
+            event.preventDefault(); 
             
             const pinAttempt = prompt("enter pin to unlock linden pack:");
             
-            // Checks for either '453' or '#453' to keep it user friendly
             if (pinAttempt === "453" || pinAttempt === "#453") {
                 const triggerDownload = document.createElement('a');
-                // Updated Google Drive URL
                 triggerDownload.href = "https://drive.google.com/uc?export=download&id=1wceISdipCr75v0lmw6Zzd87ZLqW1V8rK";
                 triggerDownload.download = "linden-pack.zip";
                 triggerDownload.click();
@@ -636,7 +631,15 @@
 
         // Start grid map
         initGrid();
-    </script>
 
+        // Progressive Web App Service Worker Registration Engine
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker successfully bound to scope.', reg))
+                    .catch(err => console.log('Service Worker configuration initialization failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>
