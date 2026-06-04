@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bloxy tools</title>
+    
+    <!-- Tab Image (Favicon) -->
+    <link class="brand-favicon" rel="icon" type="image/png" href="https://iili.io/fUq31cv.png">
+    
+    <style>
+        :root {
+            --primary: #ffffff;
+            --accent: #3b82f6;
+            --panel-bg: rgba(255, 255, 255, 0.05);
+            --panel-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+            /* Background image */
+            background-image: url('https://iili.io/CF1nnPn.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--primary);
+            padding-top: 90px;
+            padding-bottom: 40px;
+            box-sizing: border-box;
+        }
+
+        /* Branding & Navigation Top Bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 40px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .brand-text {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: lowercase;
+            background: linear-gradient(45deg, #ffffff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            text-transform: lowercase;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--primary);
+        }
+
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: var(--primary);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+        }
+
+        /* App Sections Layout */
+        .content-section {
+            display: none;
+            width: 90%;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .content-section.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Packs Section (Glass Panel) */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            margin: 0 0 30px 0;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Tools Section (Iframe Container) */
+        .iframe-container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 1200px;
+            height: 75vh;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
+        }
+
+        /* Pixel Art Canvas Layout */
+        .tool-layout {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 24px;
+            align-items: start;
+            text-align: left;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-item label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+            text-transform: lowercase;
+        }
+
+        .control-item select, .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .control-item select option {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .control-item input[type="color"] {
+            border: none;
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        /* Toolbar Selection Configuration */
+        .tool-select-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tool-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 8px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .tool-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tool-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .tool-btn .icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.2s;
+            text-transform: lowercase;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .action-btn.download {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .action-btn.download:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Pixel Grid Container */
+        .grid-wrapper {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #pixel-grid {
+            display: grid;
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.02);
+            gap: 1px;
+            user-select: none;
+        }
+
+        .pixel {
+            background: rgba(255, 255, 255, 0.05);
+            cursor: crosshair;
+        }
+
+        /* Responsiveness for mobile nav */
+        @media (max-width: 768px) {
+            .tool-layout {
+                grid-template-columns: 1fr;
+            }
+            .top-bar {
+                padding: 12px 20px;
+            }
+            .brand-text {
+                display: none;
+            }
+            .iframe-container {
+                height: 65vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .glass-panel {
+                padding: 20px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Branding & Navigation Bar -->
+    <div class="top-bar">
+        <div class="brand">
+            <img src="https://iili.io/fUq31cv.png" alt="bloxy tools logo" class="brand-logo">
+            <span class="brand-text">bloxy tools</span>
+        </div>
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="showSection('packs', this)">pika's packs</button>
+            <button class="nav-btn" onclick="showSection('skybox-maker', this)">skybox maker</button>
+            <button class="nav-btn" onclick="showSection('pixel-art', this)">pixel art maker</button>
+        </div>
+    </div>
+
+    <!-- SECTION 1: Pika's Packs Downloads -->
+    <div id="packs" class="content-section active">
+        <div class="glass-panel">
+            <h1>Downloads</h1>
+            <p>Get the latest custom UI and texture packs.</p>
+            
+            <div class="button-group">
+                <!-- Google Drive Direct Link for UI Pack -->
+                <a href="https://drive.google.com/uc?export=download&id=16bXli3lv1ij2Z4qoD2xuZz3EzfUfMB5U" class="download-btn" download>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    My UI Pack
+                </a>
+
+                <!-- Password Protected Linden Pack Link -->
+                <a href="#" class="download-btn" onclick="checkLindenPackPin(event)">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Linden Pack 🔒
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: Bloxd Skybox Generator Container -->
+    <div id="skybox-maker" class="content-section">
+        <div class="iframe-container">
+            <iframe src="https://bloxd-skybox-gen.edgeone.app/" title="Bloxd Skybox Generator"></iframe>
+        </div>
+    </div>
+
+    <!-- SECTION 3: Custom Pixel Art Maker -->
+    <div id="pixel-art" class="content-section">
+        <div class="glass-panel" style="max-width: 560px;">
+            <h1>pixel art maker</h1>
+            <p style="margin-bottom: 24px;">design custom assets and textures right here.</p>
+            
+            <div class="tool-layout">
+                <div class="control-group">
+                    <div class="control-item">
+                        <label>tools</label>
+                        <div class="tool-select-group">
+                            <button id="tool-pencil" class="tool-btn active" onclick="setTool('pencil')" title="pencil">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                            </button>
+                            <button id="tool-eraser" class="tool-btn" onclick="setTool('eraser')" title="eraser">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M20 20H4"></path><path d="M20 13l-7-7-9 9a2 2 0 0 0 0 2.83l2.17 2.17a2 2 0 0 0 2.83 0L20 13z"></path></svg>
+                            </button>
+                            <button id="tool-bucket" class="tool-btn" onclick="setTool('bucket')" title="fill bucket">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="control-item">
+                        <label>color</label>
+                        <input type="color" id="paint-color" value="#3b82f6">
+                    </div>
+                    <div class="control-item">
+                        <label>resolution</label>
+                        <select id="grid-res" onchange="initGrid()">
+                            <option value="8">8 x 8</option>
+                            <option value="16" selected>16 x 16</option>
+                            <option value="32">32 x 32</option>
+                        </select>
+                    </div>
+                    <button class="action-btn" style="margin-top: 6px;" onclick="clearGrid()">clear</button>
+                    <button class="action-btn download" onclick="downloadPNG()">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        download png
+                    </button>
+                </div>
+                
+                <div class="grid-wrapper">
+                    <div id="pixel-grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interface and Tool JavaScript Logic -->
+    <script>
+        // Section Switching Engine
+        function showSection(sectionId, btnElement) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // Linden Pack PIN Protection Validator
+        function checkLindenPackPin(event) {
+            event.preventDefault(); // Stop page scrolling/jumping
+            
+            const pinAttempt = prompt("enter pin to unlock linden pack:");
+            
+            // Checks for either '453' or '#453' to keep it user friendly
+            if (pinAttempt === "453" || pinAttempt === "#453") {
+                const triggerDownload = document.createElement('a');
+                // Updated Google Drive URL
+                triggerDownload.href = "https://drive.google.com/uc?export=download&id=1wceISdipCr75v0lmw6Zzd87ZLqW1V8rK";
+                triggerDownload.download = "linden-pack.zip";
+                triggerDownload.click();
+            } else if (pinAttempt !== null) {
+                alert("incorrect pin!");
+            }
+        }
+
+        // Pixel Art Canvas Engine
+        let isDrawing = false;
+        let currentTool = 'pencil'; 
+
+        function setTool(toolName) {
+            currentTool = toolName;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tool-${toolName}`).classList.add('active');
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('pixel-grid');
+            const res = parseInt(document.getElementById('grid-res').value);
+            
+            grid.innerHTML = '';
+            grid.style.gridTemplateColumns = `repeat(${res}, 1fr)`;
+            grid.style.gridTemplateRows = `repeat(${res}, 1fr)`;
+
+            for (let i = 0; i < res * res; i++) {
+                const pixel = document.createElement('div');
+                pixel.classList.add('pixel');
+                pixel.dataset.index = i;
+                pixel.dataset.color = ''; 
+                
+                pixel.addEventListener('mousedown', (e) => {
+                    isDrawing = true;
+                    handlePixelInteraction(e.target);
+                });
+
+                pixel.addEventListener('mouseenter', (e) => {
+                    if (isDrawing && currentTool !== 'bucket') {
+                        handlePixelInteraction(e.target);
+                    }
+                });
+
+                grid.appendChild(pixel);
+            }
+        }
+
+        function handlePixelInteraction(pixelEl) {
+            const colorPicker = document.getElementById('paint-color').value;
+            const res = parseInt(document.getElementById('grid-res').value);
+            const pixels = Array.from(document.getElementById('pixel-grid').children);
+            const index = parseInt(pixelEl.dataset.index);
+
+            if (currentTool === 'pencil') {
+                pixelEl.style.backgroundColor = colorPicker;
+                pixelEl.dataset.color = colorPicker;
+            } else if (currentTool === 'eraser') {
+                pixelEl.style.backgroundColor = '';
+                pixelEl.dataset.color = '';
+            } else if (currentTool === 'bucket') {
+                const targetColor = pixelEl.dataset.color;
+                floodFill(index, targetColor, colorPicker, res, pixels);
+            }
+        }
+
+        function floodFill(startIndex, targetColor, replacementColor, res, pixels) {
+            if (targetColor === replacementColor) return;
+            
+            const queue = [startIndex];
+            const visited = new Set();
+            
+            while (queue.length > 0) {
+                const curr = queue.shift();
+                if (visited.has(curr)) continue;
+                visited.add(curr);
+                
+                const currColor = pixels[curr].dataset.color;
+                if (currColor === targetColor) {
+                    pixels[curr].style.backgroundColor = replacementColor;
+                    pixels[curr].dataset.color = replacementColor;
+                    
+                    const x = curr % res;
+                    const y = Math.floor(curr / res);
+                    
+                    if (x > 0) queue.push(curr - 1);         
+                    if (x < res - 1) queue.push(curr + 1);   
+                    if (y > 0) queue.push(curr - res);       
+                    if (y < res - 1) queue.push(curr + res); 
+                }
+            }
+        }
+
+        function clearGrid() {
+            document.querySelectorAll('.pixel').forEach(pixel => {
+                pixel.style.backgroundColor = '';
+                pixel.dataset.color = '';
+            });
+        }
+
+        function downloadPNG() {
+            const res = parseInt(document.getElementById('grid-res').value);
+            const pixels = document.querySelectorAll('.pixel');
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = res;
+            canvas.height = res;
+            const ctx = canvas.getContext('2d');
+            
+            pixels.forEach((pixel, i) => {
+                const color = pixel.dataset.color;
+                if (color) {
+                    const x = i % res;
+                    const y = Math.floor(i / res);
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x, y, 1, 1);
+                }
+            });
+            
+            const link = document.createElement('a');
+            link.download = 'bloxd-asset.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        window.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        // Start grid map
+        initGrid();
+    </script>
+
+</body>
+</html>
